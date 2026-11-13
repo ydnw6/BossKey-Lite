@@ -1,44 +1,136 @@
-# 一键隐身 · 轻享版（BossKey Lite）
+<div align="center">
 
-> 一个 Windows 老板键：按一下，指定的程序窗口全部消失、声音同时静音；再按一下，原样回来。
-> 永久免费，MIT 协议开源。
+<img src="docs/icon.png" width="96" alt="一键隐身图标">
 
+# 一键隐身 · 轻享版
+
+**BossKey Lite** — 免费开源的 Windows 老板键
+
+按一下，指定程序的窗口全部消失、声音同时静音；再按一下，原样回来。
+
+[![最新版本](https://img.shields.io/github/v/release/jiongjiong123441/BossKey-Lite?label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC&color=cc3a2e)](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest)
+[![下载量](https://img.shields.io/github/downloads/jiongjiong123441/BossKey-Lite/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F)](https://github.com/jiongjiong123441/BossKey-Lite/releases)
 [![build](https://github.com/jiongjiong123441/BossKey-Lite/actions/workflows/build.yml/badge.svg)](https://github.com/jiongjiong123441/BossKey-Lite/actions/workflows/build.yml)
-![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-blue)
-![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.7.2%2B-512BD4)
-[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+![Windows 10 / 11](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D4)
+[![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-<p align="center"><img src="docs/screenshot.png" width="420" alt="一键隐身·轻享版 主界面"></p>
+### [⬇ 下载 BossKey-Lite.exe](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe)
+
+单文件 · 约 100 KB · 免安装 · 不联网
+
+[官网](https://bosskey.pages.dev) · [全部版本](https://github.com/jiongjiong123441/BossKey-Lite/releases) · [反馈问题](https://github.com/jiongjiong123441/BossKey-Lite/issues/new/choose)
+
+<img src="docs/screenshot.png" width="400" alt="一键隐身·轻享版 主界面">
+
+</div>
+
+> [!IMPORTANT]
+> **本软件永久免费。** 如果你是花钱买到的，说明有人在冒充本软件收费，请退款并举报。
+
+## 目录
+
+- [功能](#功能)
+- [快速上手](#快速上手)
+- [常见问题](#常见问题)
+- [轻享版与完整版](#轻享版与完整版)
+- [隐私](#隐私)
+- [从源码构建](#从源码构建)
+- [代码结构](#代码结构)
+- [参与贡献](#参与贡献)
+- [许可证](#许可证)
 
 ## 功能
 
-- **一键隐藏 / 恢复**：按全局快捷键（默认 `Ctrl + Alt + Q`），名单里的程序窗口立即隐藏；再按一次全部恢复显示。
-- **只藏你选的程序**：在「选择程序…」里从正在运行的程序中勾选，也可以保留暂未运行的程序名。没有勾选的窗口一律不动。
-- **隐身时静音并暂停**：通过 Windows Core Audio 把被隐藏程序的音频会话静音（包括 Chrome 里普通网页视频、广告这类不响应媒体键的声音），同时发送媒体暂停键；恢复时自动解除静音并继续播放。
-- **藏得住**：隐藏期间被藏程序如果又弹出新窗口，会被立刻再次隐藏（WinEvent 事件钩子 + 低频兜底巡检）。
-- **意外退出也不丢窗口**：隐藏状态会落盘，程序崩溃或被结束后，下次启动会把遗留的隐藏窗口恢复出来。
-- **管理员程序**：目标程序以管理员身份运行时，普通权限无法隐藏它，托盘菜单提供「以管理员身份重启」。
-- **其他**：快捷键可自定义（被占用时会提示）、开机自启、关闭窗口即最小化到托盘、高 DPI 清晰显示。
-- **小巧**：单个 exe，绿色免安装，无第三方依赖。
+| | |
+| --- | --- |
+| ⌨️ **一键隐藏 / 恢复** | 按全局快捷键（默认 `Ctrl + Alt + Q`），名单里的程序窗口立即隐藏；再按一次全部恢复显示。 |
+| 🎯 **只藏你选的程序** | 从正在运行的程序中勾选，也可以保留暂未运行的程序名。没有勾选的窗口一律不动。 |
+| 🔇 **隐身时静音并暂停** | 通过 Windows Core Audio 把被隐藏程序静音（包括 Chrome 里普通网页视频、广告这类不响应媒体键的声音），同时发送媒体暂停键；恢复时自动解除静音并继续播放。 |
+| 🧲 **藏得住** | 隐藏期间被藏程序又弹出新窗口，会被立刻再次隐藏（WinEvent 事件钩子 + 低频兜底巡检）。 |
+| 🛟 **意外退出不丢窗口** | 隐藏状态会写到磁盘，程序崩溃或被结束后，下次启动会把遗留的隐藏窗口恢复出来。 |
+| 🛡️ **支持管理员程序** | 目标程序以管理员身份运行时，托盘菜单可一键「以管理员身份重启」后再隐藏。 |
+| 🪶 **小而干净** | 单个 exe、免安装、无第三方依赖、不联网；支持自定义快捷键、开机自启、最小化到托盘、高 DPI 清晰显示。 |
 
-## 下载
+## 快速上手
 
-直接下载编译好的 exe：[最新版 BossKey-Lite.exe](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe)（[全部版本](https://github.com/jiongjiong123441/BossKey-Lite/releases)）
+1. [下载](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe) 并运行 `BossKey-Lite.exe`。
+2. 点「**选择程序…**」，勾选要隐藏的程序（比如浏览器、视频播放器、游戏）。
+3. 按 **`Ctrl + Alt + Q`** 隐藏，再按一次恢复。点「修改」可以换成你习惯的组合键。
 
-官网：<https://bosskey.pages.dev>
+关掉主窗口不会退出，程序会留在托盘里继续工作；彻底退出请在托盘图标上右键 →「退出」。
 
-> **本软件永久免费。** 如果你是花钱买到的，说明有人在冒充本软件收费，请退款并举报。
+<details>
+<summary><b>进阶：命令行参数、配置文件位置</b></summary>
 
-## 使用
+- `--hide-now`：启动后立即执行一次隐藏，适合配合计划任务或桌面快捷方式。
+- 配置文件：`%AppData%\MoyuBossKeyLite\config.ini`，删除该目录即可恢复默认设置。
+- 开机自启：`HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 下的 `MoyuBossKeyLite` 值，可在界面里开关。
 
-1. 运行 `BossKey-Lite.exe`。
-2. 点「选择程序…」，勾选要隐藏的程序（比如浏览器、视频播放器、游戏）。
-3. 按 `Ctrl + Alt + Q` 隐藏，再按一次恢复。点「修改」可以换成你习惯的组合键。
+</details>
 
-命令行参数：`--hide-now` 启动后立即执行一次隐藏（适合配合计划任务或快捷方式使用）。
+## 常见问题
 
-配置保存在 `%AppData%\MoyuBossKeyLite\config.ini`，删除该目录即可恢复默认设置。开机自启写在
-`HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 下的 `MoyuBossKeyLite` 值，可在界面里关闭。
+<details>
+<summary><b>打开时提示「Windows 已保护你的电脑」？</b></summary>
+
+这是 SmartScreen 对没有购买代码签名证书的新程序的通用提示。点「更多信息」→「仍要运行」即可。不放心的话，可以对照本仓库源码[自己编译](#从源码构建)。
+
+</details>
+
+<details>
+<summary><b>按老板键没反应？</b></summary>
+
+- 确认已在「选择程序…」里勾选了要隐藏的程序——名单为空时老板键不会隐藏任何窗口，界面上会有提示。
+- 快捷键可能被其他软件占用。被占用时程序会提示并临时改用其他组合键，也可以点「修改」手动换一个。
+
+</details>
+
+<details>
+<summary><b>某个程序隐藏不了？</b></summary>
+
+如果目标程序是以管理员身份运行的（如部分游戏、远程工具），Windows 不允许普通权限的程序操作它的窗口。在托盘菜单里选「以管理员身份重启」后再试。
+
+</details>
+
+<details>
+<summary><b>声音被静音了，但视频没暂停？</b></summary>
+
+「暂停」依赖程序响应系统媒体键（如 YouTube、网易云音乐）。不支持媒体键的只会被静音，恢复时再解除静音。不需要这个功能的话可以在界面里关掉。
+
+</details>
+
+<details>
+<summary><b>别人能发现吗？</b></summary>
+
+一键隐身只是把窗口藏起来，不是安全或反监控工具：任务管理器里仍能看到进程，录屏 / 截图软件也能照常工作。
+
+</details>
+
+<details>
+<summary><b>怎么卸载？</b></summary>
+
+在界面里关掉「开机自动启动」，托盘右键「退出」，然后删除 exe 和 `%AppData%\MoyuBossKeyLite` 目录即可，没有其他残留。
+
+</details>
+
+## 轻享版与完整版
+
+轻享版专注做好「一键隐藏」这一件事，永久免费、开源。
+
+| | 轻享版（本仓库） | 完整版 |
+| --- | :---: | :---: |
+| 一键隐藏 / 恢复指定程序 | ✅ | ✅ |
+| 隐身时静音并暂停 | ✅ | — |
+| 防录屏 / 防截屏 | — | ✅ |
+| 隐藏托盘图标、悬浮窗 | — | ✅ |
+| 价格 | 免费 | 付费 |
+| 源码 | MIT 开源 | 闭源 |
+
+完整版详情见[官网](https://bosskey.pages.dev)。
+
+## 隐私
+
+用本仓库源码编译出来的程序**完全不联网**：没有统计、没有遥测、没有自动更新，也不读取或上传窗口内容。只有你点「访问官网」「联系作者」时才会用默认浏览器打开对应链接。
 
 ## 从源码构建
 
@@ -54,7 +146,7 @@ cd BossKey-Lite
 
 ## 代码结构
 
-全部代码在 [`src/BossKeyLite.cs`](src/BossKeyLite.cs) 一个文件里（WinForms，纯 C#，所有界面都由代码创建，没有设计器文件）。主要的类：
+全部代码在 [`src/BossKeyLite.cs`](src/BossKeyLite.cs) 一个文件里（WinForms，纯 C#，所有界面都由代码创建，没有设计器文件）。
 
 | 类 | 作用 |
 | --- | --- |
@@ -70,27 +162,15 @@ cd BossKey-Lite
 | `Native` | Win32 P/Invoke 声明 |
 | `Ui` / `ToggleSwitch` / `RoundedPanel` | 界面配色、DPI 缩放和自绘控件 |
 
-## 隐私
-
-用本仓库源码编译出来的程序**完全不联网**：没有统计、没有遥测、没有自动更新，也不读取或上传窗口内容。只有你点「访问官网」「联系作者」时才会用默认浏览器打开对应链接。
-
-## 局限
-
-- 只隐藏窗口，不是安全工具：任务管理器里仍能看到进程，屏幕录制 / 截图软件也能照常工作。
-- 以管理员身份运行的程序，需要本软件也以管理员身份运行才能隐藏。
-- 「暂停播放」依赖程序支持系统媒体键（如 YouTube、网易云音乐）；不支持的只会被静音，不会暂停。
-
-## 与完整版的区别
-
-轻享版只保留核心的窗口隐藏和静音。防录屏 / 防截屏、隐藏托盘图标、隐藏悬浮窗等功能属于另行发布的完整版，不在本仓库中。
-
-## 参与
+## 参与贡献
 
 欢迎提 [Bug 反馈](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=bug_report.yml)、[功能建议](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=feature_request.yml) 和 Pull Request。
 
-`main` 分支受保护：不能直接推送、强推或删除，所有改动都要走 Pull Request，并且 CI 编译通过才能合并。提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
+- `main` 分支受保护：不能直接推送、强推或删除，所有改动都要走 Pull Request，CI 编译通过才能合并。
+- 提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
 
-## 发布新版本（维护者）
+<details>
+<summary><b>发布新版本（维护者）</b></summary>
 
 通过 Pull Request 把 `src/BossKeyLite.cs` 顶部的 `AssemblyVersion` 等版本号更新合并进 `main`，然后在 `main` 上推送标签：
 
@@ -99,6 +179,8 @@ git switch main && git pull && git tag v1.3.16 && git push origin v1.3.16
 ```
 
 CI 会自动编译并在本仓库创建 Release，附带 `BossKey-Lite.exe`（固定直链）和 `BossKey-Lite-v1.3.16.exe`。
+
+</details>
 
 ## 联系作者
 
