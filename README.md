@@ -8,17 +8,17 @@
 
 按一下，指定程序的窗口全部消失、声音同时静音；再按一下，原样回来。
 
-[![最新版本](https://img.shields.io/github/v/release/jiongjiong123441/BossKey-Lite?label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC&color=cc3a2e)](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest)
-[![下载量](https://img.shields.io/github/downloads/jiongjiong123441/BossKey-Lite/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F)](https://github.com/jiongjiong123441/BossKey-Lite/releases)
-[![build](https://github.com/jiongjiong123441/BossKey-Lite/actions/workflows/build.yml/badge.svg)](https://github.com/jiongjiong123441/BossKey-Lite/actions/workflows/build.yml)
+[![最新版本](https://img.shields.io/github/v/release/ydnw6/BossKey-Lite?label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC&color=cc3a2e)](https://github.com/ydnw6/BossKey-Lite/releases/latest)
+[![下载量](https://img.shields.io/github/downloads/ydnw6/BossKey-Lite/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F)](https://github.com/ydnw6/BossKey-Lite/releases)
+[![build](https://github.com/ydnw6/BossKey-Lite/actions/workflows/build.yml/badge.svg)](https://github.com/ydnw6/BossKey-Lite/actions/workflows/build.yml)
 ![Windows 10 / 11](https://img.shields.io/badge/Windows-10%20%2F%2011-0078D4)
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-### [⬇ 下载 BossKey-Lite.exe](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe)
+### [⬇ 下载 BossKey-Lite.exe](https://github.com/ydnw6/BossKey-Lite/releases/latest/download/BossKey-Lite.exe)
 
 单文件 · 约 100 KB · 免安装 · 不联网
 
-[官网](https://bosskey.pages.dev) · [全部版本](https://github.com/jiongjiong123441/BossKey-Lite/releases) · [反馈问题](https://github.com/jiongjiong123441/BossKey-Lite/issues/new/choose)
+[官网](https://bosskey.pages.dev) · [全部版本](https://github.com/ydnw6/BossKey-Lite/releases) · [反馈问题](https://github.com/ydnw6/BossKey-Lite/issues/new/choose)
 
 <img src="docs/screenshot.png" width="400" alt="一键隐身·轻享版 主界面">
 
@@ -53,7 +53,7 @@
 
 ## 快速上手
 
-1. [下载](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe) 并运行 `BossKey-Lite.exe`。
+1. [下载](https://github.com/ydnw6/BossKey-Lite/releases/latest/download/BossKey-Lite.exe) 并运行 `BossKey-Lite.exe`。
 2. 点「**选择程序…**」，勾选要隐藏的程序（比如浏览器、视频播放器、游戏）。
 3. 按 **`Ctrl + Alt + Q`** 隐藏，再按一次恢复。点「修改」可以换成你习惯的组合键。
 
@@ -137,7 +137,7 @@
 需要 Windows + [.NET SDK](https://dotnet.microsoft.com/download) 6 或更高版本（只用于编译；运行只需系统自带的 .NET Framework 4.7.2+，Windows 10/11 默认已有）。
 
 ```powershell
-git clone https://github.com/jiongjiong123441/BossKey-Lite.git
+git clone https://github.com/ydnw6/BossKey-Lite.git
 cd BossKey-Lite
 ./build.ps1          # 等同于 dotnet build BossKeyLite.csproj -c Release -o dist
 ```
@@ -164,7 +164,7 @@ cd BossKey-Lite
 
 ## 参与贡献
 
-欢迎提 [Bug 反馈](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=bug_report.yml)、[功能建议](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=feature_request.yml) 和 Pull Request。
+欢迎提 [Bug 反馈](https://github.com/ydnw6/BossKey-Lite/issues/new?template=bug_report.yml)、[功能建议](https://github.com/ydnw6/BossKey-Lite/issues/new?template=feature_request.yml) 和 Pull Request。
 
 - `main` 分支受保护：不能直接推送、强推或删除，所有改动都要走 Pull Request，CI 编译通过才能合并。
 - 提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
