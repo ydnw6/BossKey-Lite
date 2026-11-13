@@ -23,7 +23,7 @@
 
 ## 下载
 
-直接下载编译好的 exe：[Releases 最新版 BossKey-Lite.exe](https://github.com/jiongjiong123441/BossKey-Releases/releases/latest/download/BossKey-Lite.exe)
+直接下载编译好的 exe：[最新版 BossKey-Lite.exe](https://github.com/jiongjiong123441/BossKey-Lite/releases/latest/download/BossKey-Lite.exe)（[全部版本](https://github.com/jiongjiong123441/BossKey-Lite/releases)）
 
 官网：<https://bosskey.pages.dev>
 
@@ -87,6 +87,16 @@ cd BossKey-Lite
 ## 参与
 
 欢迎提 Issue 和 Pull Request。提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
+
+## 发布新版本（维护者）
+
+更新 `src/BossKeyLite.cs` 顶部的 `AssemblyVersion` 等版本号并提交，然后推送标签：
+
+```bash
+git tag v1.3.16 && git push origin v1.3.16
+```
+
+CI 会自动编译并在本仓库创建 Release，附带 `BossKey-Lite.exe`（固定直链）和 `BossKey-Lite-v1.3.16.exe`。
 
 ## 联系作者
 

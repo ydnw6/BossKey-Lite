@@ -3,8 +3,12 @@ name: build
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -21,3 +25,18 @@ jobs:
         with:
           name: BossKey-Lite
           path: dist/BossKey-Lite.exe
+
+      # 推送 v* 标签时发布 Release：BossKey-Lite.exe 作为固定直链，另附带版本号的副本
+      - name: Prepare release files
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: Copy-Item dist/BossKey-Lite.exe "dist/BossKey-Lite-${{ github.ref_name }}.exe"
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/BossKey-Lite.exe
+            dist/BossKey-Lite-${{ github.ref_name }}.exe
