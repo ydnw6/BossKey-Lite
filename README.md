@@ -86,14 +86,16 @@ cd BossKey-Lite
 
 ## 参与
 
-欢迎提 Issue 和 Pull Request。提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
+欢迎提 [Bug 反馈](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=bug_report.yml)、[功能建议](https://github.com/jiongjiong123441/BossKey-Lite/issues/new?template=feature_request.yml) 和 Pull Request。
+
+`main` 分支受保护：不能直接推送、强推或删除，所有改动都要走 Pull Request，并且 CI 编译通过才能合并。提交 PR 前请确认 `./build.ps1` 能通过编译，并在 Windows 10 或 11 上实际试过隐藏 / 恢复。
 
 ## 发布新版本（维护者）
 
-更新 `src/BossKeyLite.cs` 顶部的 `AssemblyVersion` 等版本号并提交，然后推送标签：
+通过 Pull Request 把 `src/BossKeyLite.cs` 顶部的 `AssemblyVersion` 等版本号更新合并进 `main`，然后在 `main` 上推送标签：
 
 ```bash
-git tag v1.3.16 && git push origin v1.3.16
+git switch main && git pull && git tag v1.3.16 && git push origin v1.3.16
 ```
 
 CI 会自动编译并在本仓库创建 Release，附带 `BossKey-Lite.exe`（固定直链）和 `BossKey-Lite-v1.3.16.exe`。

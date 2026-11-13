@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📥 下载最新版
+    url: https://github.com/jiongjiong123441/BossKey-Lite/releases/latest
+    about: 很多问题在新版本里已经修复，先升级试试
+  - name: 🌐 官网
+    url: https://bosskey.pages.dev
+    about: 使用说明与版本区别
+  - name: 💬 联系作者（Telegram）
+    url: https://t.me/ydnw6
+    about: 不适合公开讨论的问题，或完整版相关咨询
