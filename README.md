@@ -196,4 +196,4 @@ Telegram：[@ydnw6](https://t.me/ydnw6)
 
 ## 许可证
 
-[MIT](LICENSE) © 2026 Dingjianbin
+[MIT](LICENSE) © 2026 ydnw6
