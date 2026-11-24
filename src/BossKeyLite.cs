@@ -177,6 +177,9 @@ internal sealed class AppInfo : IDisposable
 
 	public bool Running = true;
 
+	// 远程控制软件：在选择程序列表中显示但不可勾选。
+	public bool Blocked;
+
 	private Icon _icon;
 
 	private bool _iconOwned;
@@ -300,9 +303,11 @@ internal static class AppCatalog
 		Dictionary<uint, string[]> pathCache = new Dictionary<uint, string[]>();
 		Native.EnumWindows((IntPtr hWnd, IntPtr lParam) =>
 		{
-			if (!WindowHider.IsHideCandidate(hWnd, selfHandle, selfPid, out var pid, out var _))
+			bool blocked = false;
+			if (!WindowHider.IsHideCandidate(hWnd, selfHandle, selfPid, out var pid, out var why))
 			{
-				return true;
+				if (why != WindowHider.RemoteControlReason) return true;
+				blocked = true;
 			}
 			if (!pathCache.TryGetValue(pid, out var value))
 			{
@@ -325,7 +330,8 @@ internal static class AppCatalog
 					Exe = text,
 					ExePath = value[1],
 					Title = Native.TextOf(hWnd),
-					Running = true
+					Running = true,
+					Blocked = blocked
 				};
 				map[text] = value2;
 			}
@@ -450,7 +456,7 @@ internal sealed class AppConfig
 				case "HideProcess":
 				{
 					string text4 = NormalizeExe(text3);
-					if (text4.Length > 0 && !appConfig.HideProcesses.Contains(text4))
+					if (text4.Length > 0 && !RemoteControlGuard.IsBlockedName(text4) && !appConfig.HideProcesses.Contains(text4))
 					{
 						appConfig.HideProcesses.Add(text4);
 					}
@@ -3056,6 +3062,18 @@ internal sealed class ProgramPickerDialog : Form
 		_list.SmallImageList = _icons;
 		_list.Columns.Add("程序", 294);
 		_list.Columns.Add("进程", 138);
+		_list.ShowItemToolTips = true;
+		// 远程控制软件不可勾选。
+		_list.ItemCheck += delegate(object sender, ItemCheckEventArgs e)
+		{
+			if (e.NewValue == CheckState.Checked && _list.Items[e.Index].Tag is AppInfo info && info.Blocked)
+			{
+				e.NewValue = CheckState.Unchecked;
+				SetTip("为防止被滥用，轻享版不支持隐藏 ToDesk、向日葵、UU远程、TeamViewer 等远程控制软件。", TipWarn);
+				_statusTimer.Stop();
+				_statusTimer.Start();
+			}
+		};
 		((Control)this).Controls.Add((Control)(object)_list);
 		((Control)this).Controls.Add((Control)(object)MakeButton("全选", 16, 384, 72, delegate
 		{
@@ -3149,7 +3167,7 @@ internal sealed class ProgramPickerDialog : Form
 			List<string> list2 = new List<string>();
 			foreach (string item2 in _checked)
 			{
-				if (!hashSet.Contains(item2))
+				if (!hashSet.Contains(item2) && !RemoteControlGuard.IsBlockedName(item2))
 				{
 					list2.Add(item2);
 				}
@@ -3245,7 +3263,11 @@ internal sealed class ProgramPickerDialog : Form
 		//IL_0054: Unknown result type (might be due to invalid IL or missing references)
 		//IL_005a: Expected Obj, but got Unknown
 		string text;
-		if (app.Running)
+		if (app.Blocked)
+		{
+			text = app.Exe + "（远程软件，不可隐藏）";
+		}
+		else if (app.Running)
 		{
 			text = ((app.WindowCount <= 1) ? app.Exe : (app.Exe + "（" + app.WindowCount + " 个窗口）"));
 		}
@@ -3265,9 +3287,14 @@ internal sealed class ProgramPickerDialog : Form
 		{
 			val.ImageIndex = -1;
 		}
+		if (app.Blocked)
+		{
+			val.ForeColor = Color.FromArgb(160, 160, 160);
+			val.ToolTipText = "远程控制软件不支持隐藏";
+		}
 		_apps.Add(app);
 		_list.Items.Add(val);
-		val.Checked = _checked.Contains(app.Exe);
+		val.Checked = !app.Blocked && _checked.Contains(app.Exe);
 	}
 
 	private void SetAll(bool value)
@@ -3287,7 +3314,7 @@ internal sealed class ProgramPickerDialog : Form
 		foreach (ListViewItem item in _list.Items)
 		{
 			ListViewItem val = item;
-			if (val.Checked && val.Tag is AppInfo appInfo)
+			if (val.Checked && val.Tag is AppInfo appInfo && !appInfo.Blocked)
 			{
 				string text = AppConfig.NormalizeExe(appInfo.Exe);
 				if (text.Length > 0 && !Selected.Contains(text))
@@ -3837,6 +3864,137 @@ internal static class CaptureGuard
 		}
 	}
 }
+// 远程控制软件保护：轻享版不允许隐藏 ToDesk、向日葵、UU远程、TeamViewer、AnyDesk 等远程控制/远程桌面软件的窗口。
+// 同时按进程名和 exe 版本信息（产品名/公司/描述/原始文件名）识别，改名后的 exe 也能认出来。
+// 所有隐藏路径都经过 WindowHider.IsHideCandidate，在那里统一拦截；选择程序时这类程序显示为灰色、不可勾选。
+internal static class RemoteControlGuard
+{
+	// 进程名（不含 .exe，小写）前缀。
+	private static readonly string[] NamePrefixes = new string[]
+	{
+		// 国内
+		"todesk", "sunlogin", "awesun", "aweray", "oray", "slrc",
+		"gameviewer", "uuremote", "uu_remote", "uuyc", "raylink", "anyviewer",
+		"gotohttp", "airdroid", "airmirror", "pcanywhere",
+		// 国外
+		"teamviewer", "tv_w32", "tv_x64", "anydesk", "rustdesk", "parsec",
+		"splashtop", "srserver", "srmanager", "srservice", "strwinclt",
+		"remoting_host", "remoting_desktop", "chromeremotedesktop",
+		"tvnserver", "tvnviewer", "winvnc", "vncserver", "vncviewer", "ultravnc", "tightvnc", "realvnc",
+		"logmein", "lmiguardian", "zohoassist", "zaservice", "ammyy", "aa_v3", "supremo",
+		"dwrcs", "dwrcc", "dwrcst", "radmin", "rserver3", "rutserv", "rfusclient",
+		"screenconnect", "connectwisecontrol", "nomachine", "nxplayer", "nxserver", "nxnode",
+		"meshagent", "remotepc", "remotedesktopmanager", "quickassist", "msrdc", "mstsc", "rdpclip"
+	};
+
+	// exe 版本信息里出现这些词即视为远程控制软件（小写比较）。
+	private static readonly string[] InfoKeywords = new string[]
+	{
+		"todesk", "sunlogin", "向日葵", "oray", "贝锐", "uu远程", "uu remote", "gameviewer", "raylink", "anyviewer",
+		"gotohttp", "airdroid", "airmirror", "teamviewer", "anydesk", "rustdesk", "parsec", "splashtop",
+		"chrome remote desktop", "vnc", "logmein", "zoho assist", "ammyy", "supremo", "dameware", "radmin",
+		"screenconnect", "connectwise control", "nomachine", "remotepc", "quick assist", "快速助手",
+		"remote desktop", "remote control", "remote assistance", "remote access", "远程桌面", "远程控制", "远程协助", "远程连接"
+	};
+
+	private const int PidTtlMs = 30000;
+	private static readonly object Sync = new object();
+	private static readonly Dictionary<uint, bool> PidResult = new Dictionary<uint, bool>();
+	private static readonly Dictionary<uint, int> PidStamp = new Dictionary<uint, int>();
+	private static readonly Dictionary<string, bool> PathResult = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+
+	// 只看名字（用于配置文件里的名单、未在运行的程序）。exe 可带或不带 .exe。
+	public static bool IsBlockedName(string exe)
+	{
+		if (string.IsNullOrEmpty(exe)) return false;
+		string n;
+		try { n = Path.GetFileName(exe.Trim()).ToLowerInvariant(); }
+		catch (Exception) { return false; }
+		if (n.EndsWith(".exe", StringComparison.Ordinal)) n = n.Substring(0, n.Length - 4);
+		if (n.Length == 0) return false;
+		foreach (string prefix in NamePrefixes)
+			if (n.StartsWith(prefix, StringComparison.Ordinal)) return true;
+		return false;
+	}
+
+	// 名字或 exe 版本信息命中即为远程控制软件。结果按路径缓存。
+	public static bool IsBlocked(string exe, string path)
+	{
+		if (IsBlockedName(exe)) return true;
+		if (string.IsNullOrEmpty(path)) return false;
+		lock (Sync)
+		{
+			bool cached;
+			if (PathResult.TryGetValue(path, out cached)) return cached;
+		}
+		bool result = false;
+		try
+		{
+			FileVersionInfo info = FileVersionInfo.GetVersionInfo(path);
+			result = IsBlockedName(info.OriginalFilename) || IsBlockedName(info.InternalName)
+				|| HasKeyword(info.ProductName) || HasKeyword(info.FileDescription) || HasKeyword(info.CompanyName);
+		}
+		catch (Exception) { }
+		lock (Sync)
+		{
+			if (PathResult.Count > 1024) PathResult.Clear();
+			PathResult[path] = result;
+		}
+		return result;
+	}
+
+	// 窗口枚举热路径用：按 pid 缓存 30 秒。
+	public static bool IsBlockedPid(uint pid)
+	{
+		if (pid == 0) return false;
+		int now = Environment.TickCount;
+		lock (Sync)
+		{
+			int stamp; bool cached;
+			if (PidStamp.TryGetValue(pid, out stamp) && (uint)(now - stamp) < (uint)PidTtlMs && PidResult.TryGetValue(pid, out cached))
+				return cached;
+		}
+		bool result = IsBlocked(AppCatalog.ProcessExeOf(pid), ImagePathOf(pid));
+		lock (Sync)
+		{
+			if (PidResult.Count > 512) { PidResult.Clear(); PidStamp.Clear(); }
+			PidResult[pid] = result;
+			PidStamp[pid] = now;
+		}
+		if (result) Log.Write("RemoteControlGuard: pid=" + pid + " " + AppCatalog.ProcessExeOf(pid) + " 为远程控制软件，不隐藏");
+		return result;
+	}
+
+	private static bool HasKeyword(string text)
+	{
+		if (string.IsNullOrEmpty(text)) return false;
+		string t = text.ToLowerInvariant();
+		foreach (string k in InfoKeywords)
+			if (t.IndexOf(k, StringComparison.Ordinal) >= 0) return true;
+		return false;
+	}
+
+	// QueryFullProcessImageName 只需 PROCESS_QUERY_LIMITED_INFORMATION，以管理员身份运行的进程也能读到路径。
+	private static string ImagePathOf(uint pid)
+	{
+		IntPtr h = Native.OpenProcess(0x1000u, false, pid);
+		if (h == IntPtr.Zero) return AppCatalog.ProcessPathOf(pid);
+		try
+		{
+			StringBuilder sb = new StringBuilder(1024);
+			int size = sb.Capacity;
+			return QueryFullProcessImageName(h, 0, sb, ref size) ? sb.ToString(0, size) : string.Empty;
+		}
+		catch (Exception) { return string.Empty; }
+		finally { CloseHandle(h); }
+	}
+
+	[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+	private static extern bool QueryFullProcessImageName(IntPtr hProcess, int dwFlags, StringBuilder lpExeName, ref int lpdwSize);
+
+	[DllImport("kernel32.dll", SetLastError = true)]
+	private static extern bool CloseHandle(IntPtr hObject);
+}
 internal sealed class WindowShowWatcher : IDisposable
 {
  private delegate void WinEventProc(IntPtr hook, uint eventType, IntPtr hwnd,
@@ -3905,6 +4063,8 @@ internal static class WindowHider
 		"SysShadow", "Windows.UI.Core.CoreWindow"
 	};
 
+	internal const string RemoteControlReason = "remote control";
+
 	internal static bool IsHideCandidate(IntPtr hWnd, IntPtr selfHandle, uint selfPid, out uint pid, out string reason)
 	{
 		pid = 0u;
@@ -3934,6 +4094,11 @@ internal static class WindowHider
 		if (Native.IsCloaked(hWnd))
 		{
 			reason = "cloaked";
+			return false;
+		}
+		if (RemoteControlGuard.IsBlockedPid(pid))
+		{
+			reason = RemoteControlReason;
 			return false;
 		}
 		// 已选程序的工具窗口和无标题悬浮窗也需要一起隐藏和恢复。
