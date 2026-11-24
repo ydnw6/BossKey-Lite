@@ -23,12 +23,12 @@ using Microsoft.Win32;
 [assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCopyright("Copyright (c) 2026 Dingjianbin")]
 [assembly: AssemblyDescription("老板键一键隐藏指定程序的窗口与托盘图标，任务栏保持可见")]
-[assembly: AssemblyFileVersion("1.3.15.0")]
-[assembly: AssemblyInformationalVersion("1.3.15")]
+[assembly: AssemblyFileVersion("1.3.16.0")]
+[assembly: AssemblyInformationalVersion("1.3.16")]
 [assembly: AssemblyProduct("一键隐身·轻享版")]
 [assembly: AssemblyTitle("一键隐身·轻享版")]
 [assembly: NeutralResourcesLanguage("zh-CN")]
-[assembly: AssemblyVersion("1.3.15.0")]
+[assembly: AssemblyVersion("1.3.16.0")]
 namespace MoyuBossKey
 {
 
