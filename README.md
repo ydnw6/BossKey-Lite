@@ -100,6 +100,13 @@
 </details>
 
 <details>
+<summary><b>为什么 ToDesk、向日葵等远程软件选不了？</b></summary>
+
+为防止被用来偷偷藏起远程控制程序，轻享版**不允许隐藏远程控制 / 远程桌面类软件**，包括 ToDesk、向日葵、UU远程、RayLink、TeamViewer、AnyDesk、RustDesk、Parsec、Splashtop、VNC、Windows 远程桌面（mstsc）等。它们在「选择程序…」里显示为灰色、无法勾选，即使旧配置里勾选过也会自动忽略。识别同时看进程名和 exe 的版本信息，改文件名也绕不过去。
+
+</details>
+
+<details>
 <summary><b>别人能发现吗？</b></summary>
 
 一键隐身只是把窗口藏起来，不是安全或反监控工具：任务管理器里仍能看到进程，录屏 / 截图软件也能照常工作。
@@ -157,6 +164,7 @@ cd BossKey-Lite
 | `WindowShowWatcher` | `SetWinEventHook` 监听窗口显示事件，隐藏期间新弹出的窗口立即再藏 |
 | `HiddenStateStore` | 把隐藏状态写到磁盘，崩溃后恢复 |
 | `AudioMute` | Core Audio（WASAPI）按进程静音 / 解除静音 |
+| `RemoteControlGuard` | 识别远程控制软件（进程名 + exe 版本信息），禁止隐藏 |
 | `AppCatalog` / `ProgramPickerDialog` | 列出可隐藏的程序并选择 |
 | `AppConfig` | 读写 `config.ini` |
 | `Native` | Win32 P/Invoke 声明 |
